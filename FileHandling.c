@@ -77,19 +77,25 @@ void displaydata()
 
     if (fptr == NULL)
     {
-        printf("File is empty !\n");
+        printf("Error opening file!\n");
         return;
     }
 
+    bool datapresent = false;
     User data;
-
-    printf("UniqueID Name Age \n");
 
     while (fscanf(fptr, "%d %s %d", &data.id, data.name, &data.age) != EOF)
     {
+        if (datapresent == false)
+        {
+            printf("UniqueID Name Age \n");
+        }
+        datapresent = true;
         printf("%d %s %d \n", data.id, data.name, data.age);
     }
 
+    if (!datapresent)
+        printf("file is empty!\n");
     fclose(fptr);
 }
 
@@ -157,10 +163,15 @@ void deletedata()
     printf("Enter ID which needs to be deleted : ");
     scanf("%d", &targetid);
 
+    bool isdatapresent = false;
+    bool isfileEmpty = true;
+
     while (fscanf(fptr, "%d %s %d", &data.id, data.name, &data.age) != EOF)
     {
+        isfileEmpty = false;
         if (targetid == data.id)
         {
+            isdatapresent = true;
             continue;
         }
 
@@ -172,7 +183,12 @@ void deletedata()
 
     remove("users.txt");
     rename("temp.txt", "users.txt");
-    printf("Data deleted successfully!\n");
+    if (isfileEmpty)
+        printf("File is empty!\n");
+    else if (isdatapresent)
+        printf("Data deleted successfully!\n");
+    else
+        printf("Target data is not present is file!\n");
 }
 
 int main()
