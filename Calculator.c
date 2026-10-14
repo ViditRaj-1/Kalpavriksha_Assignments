@@ -6,15 +6,38 @@
 bool isValid(char *s)
 {
     int n = strlen(s);
+    if (n == 0)
+        return false;
+    
+    if (s[n - 1] == '+' || s[n - 1] == '-' || s[n - 1] == '*' || s[n - 1] == '/')
+        return false;
+
     for (int i = 0; i < n; i++)
     {
         char ch = s[i];
         if (ch == ' ' || ch == '+' || ch == '-' || ch == '*' || ch == '/' || (ch >= '0' && ch <= '9'))
         {
+           
+            if (i == 0 && (ch == '*' || ch == '/'))
+                return false;
+
+           
+            if (i > 0)
+            {
+                char prev = s[i - 1];
+                if ((prev == '+' || prev == '-' || prev == '*' || prev == '/') &&
+                    (ch == '+' || ch == '-' || ch == '*' || ch == '/'))
+                {
+                    if (prev == ch && (ch == '+' || ch == '-'))
+                        return false;
+                    if (ch == '*' || ch == '/')
+                        return false;
+                }
+            }
             continue;
         }
         else
-            return false;
+            return false; 
     }
     return true;
 }
@@ -29,7 +52,10 @@ int main()
     printf("\n");
 
     int size = strlen(s);
-    s[size - 1] = '\0';
+    if (size > 0 && s[size - 1] == '\n')
+    {
+        s[size - 1] = '\0';
+    }
 
     if (!isValid(s))
     {
@@ -44,8 +70,19 @@ int main()
     int numidx = -1;
 
     int n = strlen(s);
-
     int i = 0;
+
+    
+    int sign = 1;
+    if (s[0] == '-')
+    {
+        sign = -1;
+        i++;
+    }
+    else if (s[0] == '+')
+    {
+        i++;
+    }
 
     while (i < n)
     {
@@ -61,6 +98,10 @@ int main()
 
         if (val > 0 || gotzero)
         {
+            if (numidx == -1 && sign == -1)
+            {
+                val = -val;
+            }
             nums[++numidx] = val;
         }
 
@@ -166,6 +207,12 @@ int main()
             int d = digit1 / digit2;
             nums[++numidx] = d;
         }
+    }
+
+    if (numidx < 0)
+    {
+        printf("Error: Invalid expression.");
+        return 0;
     }
 
     printf("The final answer is : %d", nums[numidx]);
