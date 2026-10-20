@@ -14,13 +14,21 @@ int main()
 
         char name[50];
         printf("Enter your name : ");
-        scanf("%s", name);
+        scanf("%49s", name);
 
         int count;
         printf("Enter number of tickets : ");
-        scanf("%d", &count);
+        
 
-        if (count < 1 || count > 20)
+        if(scanf("%d", &count) != 1)
+        {
+            
+            printf("Please enter a valid numeric number\n");
+           
+            break;
+        }
+
+        if(count < 1 || count > 20)
         {
             printf("Please enter valid number of tickets\n");
             continue;
